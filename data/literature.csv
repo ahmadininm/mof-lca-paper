@@ -1,0 +1,12 @@
+Material,GWP_kgCO2_per_kg,Source,Type
+"UiO-66-NH2 (solvothermal 1)",353,"Luo et al. 2021",Literature
+"UiO-66-NH2 (solvothermal 2)",180,"Luo et al. 2021",Literature
+"UiO-66-NH2 (aqueous)",43,"Luo et al. 2021",Literature
+"UiO-66 (Zr) Commercial",273.8,"Dutta et al. 2024",Literature
+"Activated carbon (coal)",18.28,"Gu et al. 2018",Literature
+"Activated carbon (wood)",8.6,"Gu et al. 2018",Literature
+"Ni-Fe LDH / chitosan (coal)",62.58,"Bisaria et al. 2023",Literature
+"Ni-Fe LDH / chitosan (renewables)",31.21,"Bisaria et al. 2023",Literature
+"Biochar (meta-analysis)",1.2,"Arfasa and Tilahun 2025",Literature
+"Biomass-derived adsorbents",2.85,"Arfasa and Tilahun 2025",Literature
+"MOF adsorbents (mean)",25,"Arfasa and Tilahun 2025",Literature
