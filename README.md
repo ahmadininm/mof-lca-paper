@@ -59,7 +59,6 @@ This model supports:
 ## Limitations
 
 * Not a full industrial plant design
-* Not a cradle-to-grave assessment
 * Not a techno-economic model
 
 ## Citation
