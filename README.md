@@ -69,6 +69,9 @@ If you use this model, code, or derived results in academic work, please cite th
 
 Licensed under CC BY-NC 4.0. Academic and non-commercial use permitted. Commercial use requires permission.
 
+## Contact
+
+ae4045@coventry.ac.uk
 ---
 
 
