@@ -1248,11 +1248,7 @@ def plot_sankey_materials_processes(
     sources.append(idx[f"{bead_name} synthesis"])
     targets.append(idx["Total GWP"])
     values.append(to_total)
-
-template, font_colour, paper_bg, plot_bg = _get_streamlit_theme_tokens()
-line_colour = "white" if font_colour.lower() == "white" else "black"
-
-fig = go.Figure(
+    fig = go.Figure(
     data=[
         go.Sankey(
             node=dict(
@@ -1272,6 +1268,7 @@ fig.update_layout(
     height=520,
     margin=dict(l=10, r=10, t=60, b=10),
 )
+
 
 
     return fig
@@ -2361,6 +2358,7 @@ Scaled scenario:
 
 if __name__ == "__main__":
     main()
+
 
 
 
