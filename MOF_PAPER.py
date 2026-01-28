@@ -1233,6 +1233,43 @@ def plot_sankey_materials_processes(
     sources.append(idx[f"{bead_name} synthesis"])
     targets.append(idx["Total GWP"])
     values.append(to_total)
+        # ---------------------------------------------------------------------
+    # Add numeric values to node labels (GWP contributions, kg CO2-eq per kg bead)
+    # ---------------------------------------------------------------------
+    node_value: Dict[str, float] = {}
+
+    # Material nodes
+    for _, row in df_mat.iterrows():
+        lbl = f"Material: {row['Component']}"
+        node_value[lbl] = node_value.get(lbl, 0.0) + float(row["GWP"])
+
+    # Process-step nodes (electricity split)
+    if not df_elec_steps.empty:
+        for _, row in df_elec_steps.iterrows():
+            lbl = f"Process: {row['Step']}"
+            node_value[lbl] = node_value.get(lbl, 0.0) + float(row["GWP"])
+
+    # Aggregate nodes
+    node_value["Materials supply"] = float(mat_sum)
+    node_value["Electricity supply"] = float(elec_sum)
+    if transport_gwp > 0:
+        node_value["Transport"] = float(transport_gwp)
+
+    node_value[f"{bead_name} synthesis"] = float(to_total)
+    node_value["Total GWP"] = float(to_total)
+
+    def _fmt(v: float) -> str:
+        v = float(v)
+        if abs(v) >= 10:
+            return f"{v:.1f}"
+        if abs(v) >= 1:
+            return f"{v:.2f}"
+        return f"{v:.3f}"
+
+    node_labels_display = [
+        f"{lbl}: {_fmt(node_value.get(lbl, 0.0))}" for lbl in node_labels
+    ]
+
 
     fig = go.Figure(
         data=[
@@ -2341,6 +2378,7 @@ Scaled scenario:
 
 if __name__ == "__main__":
     main()
+
 
 
 
