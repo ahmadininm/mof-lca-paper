@@ -53,7 +53,7 @@ DEFAULT_CUSTOM_GRIDS = {
     "China Grid": 0.58,
 }
 
-# Excel candidates (UPDATED for your attached workbook)
+# Excel candidates 
 EXCEL_CANDIDATES = [
     "All the calculations V11 - with figures.xlsx",
     "All the calculations V10.xlsx",
@@ -1576,8 +1576,8 @@ def main() -> None:
             )
 
         st.divider()
-        st.subheader("AI settings")
-        ai_model = st.text_input("Model name", value="gpt-3.5-turbo", help="Used only if OpenAI SDK + key are configured.")
+        sAI_MODEL_NAME = "gpt-4o-mini"  # or whichever fixed model is intended
+
 
     # Build calculation dataframes
     ef_df = build_ef_df_from_table(st.session_state["ef_table_df"])
@@ -1698,7 +1698,7 @@ def main() -> None:
 
         st.markdown(
             """
-This tab computes electricity intensities from your V11-aligned table inputs.
+This tab computes electricity intensities from table inputs.
 
 Baseline scenario:
 - Full lab duty cycles are allocated to the small batch output (no utilisation correction).
@@ -2333,4 +2333,5 @@ Scaled scenario:
 
 if __name__ == "__main__":
     main()
+
 
