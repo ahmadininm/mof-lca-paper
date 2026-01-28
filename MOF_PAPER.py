@@ -1413,11 +1413,14 @@ Guidelines:
 """.strip()
 
     try:
+
+        clean_q = user_question.strip()[:1500]
+        
         response = client.chat.completions.create(
             model=model_name,
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_question.strip()},
+                {"role": "user", "content": clean_q},
             ],
             temperature=0.3,
             max_tokens=400,
@@ -2358,6 +2361,7 @@ Scaled scenario:
 
 if __name__ == "__main__":
     main()
+
 
 
 
