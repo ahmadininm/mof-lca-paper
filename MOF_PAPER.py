@@ -1271,26 +1271,31 @@ def plot_sankey_materials_processes(
     ]
 
 
-    fig = go.Figure(
+        fig = go.Figure(
         data=[
             go.Sankey(
+                textfont=dict(size=14, color="black"),  # <-- key: forces solid black text
                 node=dict(
                     pad=18,
                     thickness=22,
                     line=dict(color="black", width=0.8),
-                    label=node_labels,
+                    label=node_labels_display,          # <-- use labels with numbers
                     color=node_colors,
                 ),
                 link=dict(source=sources, target=targets, value=values),
             )
         ]
     )
+
     fig.update_layout(
         title_text=f"Sankey (materials + processes): {bead_name}",
+        template="plotly_white",          # <-- lock to white theme
+        paper_bgcolor="white",            # <-- avoid dark-mode styling bleed-through
         font=dict(size=14, color="black"),
         height=520,
         margin=dict(l=10, r=10, t=60, b=10),
     )
+
     return fig
 
 
@@ -2378,6 +2383,7 @@ Scaled scenario:
 
 if __name__ == "__main__":
     main()
+
 
 
 
