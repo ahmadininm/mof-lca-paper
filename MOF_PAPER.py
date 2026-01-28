@@ -1234,15 +1234,31 @@ def plot_sankey_materials_processes(
     targets.append(idx["Total GWP"])
     values.append(to_total)
 
+    # Calculate totals for labels
+    node_in = {i: 0.0 for i in range(len(node_labels))}
+    node_out = {i: 0.0 for i in range(len(node_labels))}
+
+    for s, t, v in zip(sources, targets, values):
+        node_out[s] += v
+        node_in[t] += v
+
+    final_labels = []
+    for i, lbl in enumerate(node_labels):
+        val = max(node_in[i], node_out[i])
+        final_labels.append(f"{lbl}: {val:.1f}")
+
     fig = go.Figure(
         data=[
             go.Sankey(
+                # FIX: 'textfont' goes here, not inside 'node'
+                textfont=dict(color="black", size=12),
                 node=dict(
                     pad=18,
                     thickness=22,
                     line=dict(color="black", width=0.8),
-                    label=node_labels,
+                    label=final_labels,
                     color=node_colors,
+                    # Removed 'font' from here as it caused the error
                 ),
                 link=dict(source=sources, target=targets, value=values),
             )
@@ -2341,6 +2357,7 @@ Scaled scenario:
 
 if __name__ == "__main__":
     main()
+
 
 
 
