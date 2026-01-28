@@ -1600,7 +1600,7 @@ def main() -> None:
             )
 
         st.divider()
-        sAI_MODEL_NAME = "gpt-4o-mini"  # or whichever fixed model is intended
+        ai_model = "gpt-4o-mini"  # or whichever fixed model is intended
 
 
     # Build calculation dataframes
@@ -2357,6 +2357,7 @@ Scaled scenario:
 
 if __name__ == "__main__":
     main()
+
 
 
 
