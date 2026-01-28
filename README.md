@@ -72,6 +72,8 @@ Licensed under CC BY-NC 4.0. Academic and non-commercial use permitted. Commerci
 ## Contact
 
 ae4045@coventry.ac.uk
+ahmadij@mail.ubc.ca
+Tinarg@student.ubc.ca
 ---
 
 
