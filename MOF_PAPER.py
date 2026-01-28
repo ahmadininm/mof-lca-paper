@@ -76,33 +76,43 @@ PLOTLY_CONFIG = {
 
 
 def apply_publication_style(fig: go.Figure, height: int = 520, title_size: int = 18) -> go.Figure:
-    """
-    Enforces readable, publication-friendly styling:
-    - Dark fonts
-    - Slightly larger text
-    - White background template
-    """
+    # Streamlit theme base is typically "light" or "dark"
+    base = st.get_option("theme.base") or "light"
+    is_dark = str(base).strip().lower() == "dark"
+
+    template = "plotly_dark" if is_dark else "plotly_white"
+    font_colour = "white" if is_dark else "black"
+
     fig.update_layout(
-        template="plotly_white",
+        template=template,
         height=height,
-        font=dict(size=14, color="black"),
-        title=dict(font=dict(size=title_size, color="black")),
-        legend=dict(font=dict(size=13, color="black")),
+        font=dict(size=14, color=font_colour),
+        title=dict(font=dict(size=title_size, color=font_colour)),
+        legend=dict(font=dict(size=13, color=font_colour)),
         margin=dict(l=40, r=20, t=60, b=50),
     )
-    try:
-        fig.update_xaxes(tickfont=dict(size=13, color="black"), title_font=dict(size=14, color="black"))
-        fig.update_yaxes(tickfont=dict(size=13, color="black"), title_font=dict(size=14, color="black"))
-    except Exception:
-        # Some traces (e.g., Sankey) do not use cartesian axes
-        pass
 
     try:
-        fig.update_traces(textfont=dict(size=13, color="black"))
+        fig.update_xaxes(
+            tickfont=dict(size=13, color=font_colour),
+            title_font=dict(size=14, color=font_colour),
+        )
+        fig.update_yaxes(
+            tickfont=dict(size=13, color=font_colour),
+            title_font=dict(size=14, color=font_colour),
+        )
+    except Exception:
+        # Non-cartesian traces (eg Sankey)
+        pass
+
+    # Bar labels, etc.
+    try:
+        fig.update_traces(textfont=dict(size=13, color=font_colour))
     except Exception:
         pass
 
     return fig
+
 
 
 # =============================================================================
@@ -2331,6 +2341,7 @@ Scaled scenario:
 
 if __name__ == "__main__":
     main()
+
 
 
 
