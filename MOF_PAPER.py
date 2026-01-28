@@ -1255,11 +1255,10 @@ line_colour = "white" if font_colour.lower() == "white" else "black"
 fig = go.Figure(
     data=[
         go.Sankey(
-            arrangement="snap",
             node=dict(
-                pad=28,
-                thickness=30,
-                line=dict(color=line_colour, width=0.8),
+                pad=18,
+                thickness=22,
+                line=dict(color="black", width=0.8),
                 label=node_labels,
                 color=node_colors,
             ),
@@ -1267,16 +1266,13 @@ fig = go.Figure(
         )
     ]
 )
-
 fig.update_layout(
-    template=template,
-    paper_bgcolor=paper_bg,
-    plot_bgcolor=plot_bg,
     title_text=f"Sankey (materials + processes): {bead_name}",
-    font=dict(size=18, color=font_colour),
-    height=720,
-    margin=dict(l=10, r=10, t=70, b=10),
+    font=dict(size=14, color="black"),
+    height=520,
+    margin=dict(l=10, r=10, t=60, b=10),
 )
+
 
     return fig
 
@@ -2365,6 +2361,7 @@ Scaled scenario:
 
 if __name__ == "__main__":
     main()
+
 
 
 
