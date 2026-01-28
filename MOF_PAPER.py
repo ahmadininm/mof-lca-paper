@@ -1424,7 +1424,7 @@ Guidelines:
         )
         return response.choices[0].message.content
     except Exception as e:
-        return f"AI Error: {e}"
+        return f"AI error: request failed. Please try again later."
 
 
 # =============================================================================
@@ -2358,6 +2358,7 @@ Scaled scenario:
 
 if __name__ == "__main__":
     main()
+
 
 
 
