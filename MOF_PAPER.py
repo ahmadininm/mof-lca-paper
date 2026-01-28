@@ -1420,6 +1420,7 @@ Guidelines:
                 {"role": "user", "content": user_question.strip()},
             ],
             temperature=0.3,
+            max_tokens=400,
         )
         return response.choices[0].message.content
     except Exception as e:
@@ -2357,6 +2358,7 @@ Scaled scenario:
 
 if __name__ == "__main__":
     main()
+
 
 
 
