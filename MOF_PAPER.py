@@ -1,6 +1,6 @@
-# lca_explorer_v11_excel_defaults_no_upload.py
+
 # Interactive LCA Explorer: Ref-Bead vs U@Bead
-#
+
 
 
 from __future__ import annotations
@@ -42,7 +42,7 @@ ASSETS_DIR = BASE_DIR / "data"
 ID_REF = "ref"
 ID_MOF = "mof"
 
-APP_TITLE = "Interactive LCA Explorer: Ref-Bead vs U@Bead (Excel V11 aligned)"
+APP_TITLE = "Interactive LCA Explorer: Ref-Bead vs U@Bead"
 
 DEFAULT_CUSTOM_GRIDS = {
     "QC Hydro": 0.002,
@@ -55,10 +55,8 @@ DEFAULT_CUSTOM_GRIDS = {
 
 # Excel candidates 
 EXCEL_CANDIDATES = [
-    "All the calculations V11 - with figures.xlsx",
-    "All the calculations V10.xlsx",
-    "All the calculations V10 (1).xlsx",
-    "All calculations V10.xlsx",
+
+    "All calculations.xlsx",
 ]
 
 # =============================================================================
@@ -177,7 +175,7 @@ def add_png_download_button(fig: go.Figure, filename: str, key: str, label: str 
 
 
 # =============================================================================
-# EXCEL LOADING (V11-ALIGNED, NO USER UPLOAD)
+# EXCEL LOADING 
 # =============================================================================
 def _find_excel_path() -> Optional[Path]:
     """
@@ -249,7 +247,7 @@ def _is_number(x) -> bool:
 
 def _extract_unit_value(col_c, col_d) -> Tuple[str, float]:
     """
-    Excel V11 Table 1.2 is mixed:
+    Excel Table 1.2 is mixed:
       - Some rows are Unit (C), Value (D)
       - Some rows are Value (C), Unit (D)
 
@@ -289,7 +287,7 @@ def load_tables_from_excel_v11(excel_path: Path) -> Optional[
     Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]
 ]:
     """
-    Excel V11 aligned loader.
+    
 
     Returns:
       ef_table_df   : Table 1.1 (inputs) + reagent_name column
@@ -348,7 +346,7 @@ def load_tables_from_excel_v11(excel_path: Path) -> Optional[
     ef_table_df["Value"] = pd.to_numeric(ef_table_df["Value"], errors="coerce")
 
     # ---------------------------
-    # Table 1.2 Lab Data & Equipment (MIXED Unit/Value columns in V11)
+    # Table 1.2 Lab Data & Equipment (MIXED Unit/Value)
     # ---------------------------
     lab_header_row = _find_row_with_first_cell(ws_in, "Item name", col=1, max_rows=120)
     if lab_header_row is None:
@@ -520,7 +518,7 @@ def load_tables_from_excel_v11(excel_path: Path) -> Optional[
 # =============================================================================
 def embedded_defaults_tables() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """
-    Minimal fallback (kept close to V11).
+    Minimal fallback.
     """
     ef_table_df = pd.DataFrame(
         [
@@ -535,7 +533,7 @@ def embedded_defaults_tables() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame
         ]
     )
 
-    # IMPORTANT: w_MOF_loading is stored as a FRACTION in Excel V11 (0.13 = 13 wt%)
+    
     lab_table_df = pd.DataFrame(
         [
             {"Item name": "m_bead_batch_Ref", "Description": "Ref bead per batch", "Unit": "g", "Value": 0.4},
@@ -687,7 +685,7 @@ def compute_recipe_routes(
     """
     Builds the routes_df inventory per 1 kg bead output (FU1).
 
-    Excel V11 alignment:
+
     - w_MOF_loading is stored as a fraction (e.g. 0.13 = 13 wt%)
     - polymer support fraction = 1 - w_MOF_loading
     - Formic/Ethanol base inventories are computed without recovery, then recovery is applied as (1-R)
@@ -772,7 +770,7 @@ def compute_recipe_routes(
 
 
 # =============================================================================
-# SCALING ENGINE (ELECTRICITY, V11-ALIGNED)
+# SCALING ENGINE (ELECTRICITY)
 # =============================================================================
 @dataclass
 class ScalingOutputs:
@@ -794,7 +792,7 @@ def compute_scaling_from_input_tables(
     mof_solvent_base_mass_kg_per_kgbead: float,
 ) -> ScalingOutputs:
     """
-    Exact match to the Excel V11 electricity inventory logic.
+    
 
     REF baseline (raw, no utilisation): kWh/kg = sum(P*t)/m_ref_kg for each step.
     REF scaled: multiply each step by its scaling factor:
@@ -1015,7 +1013,7 @@ def calculate_impacts(
     transport_pct: float = 0.0,
 ) -> Tuple[Optional[dict], Optional[pd.DataFrame]]:
     """
-    Calculates GWP per kg bead (FU1), aligned to Excel V11 structure:
+    Calculates GWP per kg bead (FU1):
     - Electricity (kWh/kg) * EF_elec
     - Reagents mass inventory * EF_reagent
     - Solvent recovery: implemented as lower fresh solvent mass (1-R) in inventory
@@ -1347,7 +1345,7 @@ def render_system_boundary_graphviz() -> None:
     """
     try:
         st.graphviz_chart(dot, use_container_width=True)
-        st.caption("Gate-to-gate system boundary with explicit unit operations used in the electricity inventory (Excel V11 aligned).")
+        st.caption("Gate-to-gate system boundary with explicit unit operations used in the electricity inventory")
     except Exception as e:
         st.error(f"Graphviz rendering failed: {e}")
 
@@ -1407,7 +1405,7 @@ Guidelines:
 # =============================================================================
 def reset_to_defaults_auto() -> None:
     """
-    Loads defaults from Excel V11 if available (no upload), otherwise embedded defaults.
+    Loads defaults from Excel if available (no upload), otherwise embedded defaults.
     """
     excel_path = _find_excel_path()
     used_excel = False
@@ -1451,7 +1449,7 @@ def main() -> None:
     render_header_logos()
 
     st.title(APP_TITLE)
-    st.markdown("Compare Ref-Bead (polymer) vs U@Bead (MOF-functionalised) using **Excel V11-aligned** table-driven scaling and scenario controls.")
+    st.markdown("Compare Ref-Bead (polymer) vs U@Bead (MOF-functionalised) .")
 
     # Sidebar
     with st.sidebar:
@@ -1587,7 +1585,7 @@ def main() -> None:
     perf_df = st.session_state["perf_df"]
     lit_df = st.session_state["lit_df"]
 
-    # MOF loading fraction from lab table (Excel V11 uses fraction, e.g. 0.13)
+    # MOF loading fraction from lab table
     w_mof_loading = _val_from_table(lab_table_df, "Item name", "w_MOF_loading", default=0.13)
     if w_mof_loading > 1.0:
         w_mof_loading = w_mof_loading / 100.0
@@ -1694,7 +1692,7 @@ def main() -> None:
     # TAB: SCALING
     # -------------------------------------------------------------------------
     with tab_scale:
-        st.header("Scaling (Excel V11 aligned)")
+        st.header("Scaling")
 
         st.markdown(
             """
@@ -2333,5 +2331,6 @@ Scaled scenario:
 
 if __name__ == "__main__":
     main()
+
 
 
