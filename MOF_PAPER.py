@@ -1234,6 +1234,24 @@ def plot_sankey_materials_processes(
     targets.append(idx["Total GWP"])
     values.append(to_total)
 
+    # -------------------------------------------------------------------------
+    # NEW LOGIC: Calculate totals for node labels (Value next to Item)
+    # -------------------------------------------------------------------------
+    node_in = {i: 0.0 for i in range(len(node_labels))}
+    node_out = {i: 0.0 for i in range(len(node_labels))}
+
+    # Sum up all flows
+    for s, t, v in zip(sources, targets, values):
+        node_out[s] += v
+        node_in[t] += v
+
+    final_labels = []
+    for i, lbl in enumerate(node_labels):
+        # We display the max of In or Out to represent the node volume
+        val = max(node_in[i], node_out[i])
+        final_labels.append(f"{lbl}: {val:.1f}")
+    # -------------------------------------------------------------------------
+
     fig = go.Figure(
         data=[
             go.Sankey(
@@ -1241,8 +1259,11 @@ def plot_sankey_materials_processes(
                     pad=18,
                     thickness=22,
                     line=dict(color="black", width=0.8),
-                    label=node_labels,
+                    # UPDATED: Use the new labels with values
+                    label=final_labels,
                     color=node_colors,
+                    # UPDATED: Force black font color here
+                    font=dict(color="black", size=12),
                 ),
                 link=dict(source=sources, target=targets, value=values),
             )
@@ -1250,6 +1271,7 @@ def plot_sankey_materials_processes(
     )
     fig.update_layout(
         title_text=f"Sankey (materials + processes): {bead_name}",
+        # Force global font to black as well
         font=dict(size=14, color="black"),
         height=520,
         margin=dict(l=10, r=10, t=60, b=10),
@@ -2341,6 +2363,7 @@ Scaled scenario:
 
 if __name__ == "__main__":
     main()
+
 
 
 
