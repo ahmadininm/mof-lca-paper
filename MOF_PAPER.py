@@ -1233,70 +1233,28 @@ def plot_sankey_materials_processes(
     sources.append(idx[f"{bead_name} synthesis"])
     targets.append(idx["Total GWP"])
     values.append(to_total)
-        # ---------------------------------------------------------------------
-    # Add numeric values to node labels (GWP contributions, kg CO2-eq per kg bead)
-    # ---------------------------------------------------------------------
-    node_value: Dict[str, float] = {}
 
-    # Material nodes
-    for _, row in df_mat.iterrows():
-        lbl = f"Material: {row['Component']}"
-        node_value[lbl] = node_value.get(lbl, 0.0) + float(row["GWP"])
-
-    # Process-step nodes (electricity split)
-    if not df_elec_steps.empty:
-        for _, row in df_elec_steps.iterrows():
-            lbl = f"Process: {row['Step']}"
-            node_value[lbl] = node_value.get(lbl, 0.0) + float(row["GWP"])
-
-    # Aggregate nodes
-    node_value["Materials supply"] = float(mat_sum)
-    node_value["Electricity supply"] = float(elec_sum)
-    if transport_gwp > 0:
-        node_value["Transport"] = float(transport_gwp)
-
-    node_value[f"{bead_name} synthesis"] = float(to_total)
-    node_value["Total GWP"] = float(to_total)
-
-    def _fmt(v: float) -> str:
-        v = float(v)
-        if abs(v) >= 10:
-            return f"{v:.1f}"
-        if abs(v) >= 1:
-            return f"{v:.2f}"
-        return f"{v:.3f}"
-
-    node_labels_display = [
-        f"{lbl}: {_fmt(node_value.get(lbl, 0.0))}" for lbl in node_labels
-    ]
-
-
-        fig = go.Figure(
+    fig = go.Figure(
         data=[
             go.Sankey(
-                textfont=dict(size=14, color="black"),  # <-- key: forces solid black text
                 node=dict(
                     pad=18,
                     thickness=22,
                     line=dict(color="black", width=0.8),
-                    label=node_labels_display,          # <-- use labels with numbers
+                    label=node_labels,
                     color=node_colors,
                 ),
                 link=dict(source=sources, target=targets, value=values),
             )
         ]
     )
-
     fig.update_layout(
         title_text=f"Sankey (materials + processes): {bead_name}",
-        template="plotly_white",          # <-- lock to white theme
-        paper_bgcolor="white",            # <-- avoid dark-mode styling bleed-through
         font=dict(size=14, color="black"),
         height=520,
         margin=dict(l=10, r=10, t=60, b=10),
     )
-
-    
+    return fig
 
 
 # =============================================================================
@@ -2383,10 +2341,6 @@ Scaled scenario:
 
 if __name__ == "__main__":
     main()
-
-
-
-
 
 
 
