@@ -1,27 +1,7 @@
 # lca_explorer_v11_excel_defaults_no_upload.py
 # Interactive LCA Explorer: Ref-Bead vs U@Bead
 #
-# FIX (Excel-aligned to: "All the calculations V11 - with figures.xlsx")
-# - Uses V11 Excel layout explicitly (no fragile "find header row anywhere" parsing)
-# - Reads ALL inputs from the Excel "inputs" sheet (Table 1.1, Table 1.2, Recipe, Scaling block)
-# - Reads q_ref / q_mof from the Excel "Calculations" sheet
-# - Reads literature data from the Excel "Lit comparision" sheet (plus "This work" rows if present)
-# - Electricity scaling matches Excel exactly:
-#     Ref steps: Microfluidizer, Mixing (50°C), Centrifugation, Syringe Pump, Coagulation Stirring,
-#                Crosslinking, Freeze Drying
-#     MOF steps: Support electricity (0.87×Ref), Zr Stirring, Linker Stirring, 2nd FD
-#     + NEW: Solvent recovery electricity (ethanol+formic) using Excel logic:
-#         R_solv_recovery (inputs!C64) and E_solv_rec_kWh_per_kg (inputs!C65)
-#         Excel expression: ((fresh_formic + fresh_ethanol) * R/(1-R)) * E
-#         Equivalent: (base_formic + base_ethanol) * R * E
-# - Reagent naming normalised to match Excel naming:
-#     "Acetic Acid", "Formic Acid", "ZrCl4", "2-ATA"
-#
-# Display + export upgrades (DONE):
-# - Plotly modebar (zoom/pan/download) enabled everywhere via config=PLOTLY_CONFIG
-# - Publication-style fonts (darker/larger) applied consistently via apply_publication_style()
-# - PNG export upgraded (Kaleido): scale=5 + forced width/height for crisp figures
-# - Sankey readability improved: larger font and larger canvas
+
 
 from __future__ import annotations
 
@@ -54,7 +34,11 @@ except Exception:
 # =============================================================================
 # CONSTANTS
 # =============================================================================
-DATA_DIR = Path(__file__).resolve().parent
+
+BASE_DIR = Path(__file__).resolve().parent
+ASSETS_DIR = BASE_DIR / "data"
+
+
 ID_REF = "ref"
 ID_MOF = "mof"
 
@@ -640,8 +624,9 @@ def embedded_defaults_tables() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame
 # HEADER LOGOS
 # =============================================================================
 def render_header_logos() -> None:
-    cov_path = DATA_DIR / "cov.png"
-    ubc_path = DATA_DIR / "ubc.png"
+    cov_path = ASSETS_DIR / "cov.png"
+    ubc_path = ASSETS_DIR / "ubc.png"
+
 
     col_left, col_spacer, col_right = st.columns([1, 2, 1])
     with col_left:
@@ -2348,3 +2333,4 @@ Scaled scenario:
 
 if __name__ == "__main__":
     main()
+
