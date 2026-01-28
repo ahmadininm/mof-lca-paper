@@ -1296,7 +1296,7 @@ def plot_sankey_materials_processes(
         margin=dict(l=10, r=10, t=60, b=10),
     )
 
-    return fig
+    
 
 
 # =============================================================================
@@ -2383,6 +2383,7 @@ Scaled scenario:
 
 if __name__ == "__main__":
     main()
+
 
 
 
