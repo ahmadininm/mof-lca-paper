@@ -2230,7 +2230,7 @@ Scaled scenario:
             color="Scale/Form",
             title="Figure 4: Benchmark comparison of FU1 (scaled) against selected literature values",
             hover_data=["Source", "Type", "Scale/Form"],
-            log_y=True,
+            log_y=False,
         )
         fig4.update_layout(xaxis_tickangle=-45)
         fig4 = apply_publication_style(fig4, height=560)
@@ -2331,6 +2331,7 @@ Scaled scenario:
 
 if __name__ == "__main__":
     main()
+
 
 
 
