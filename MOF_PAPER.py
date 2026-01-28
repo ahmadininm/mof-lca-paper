@@ -75,17 +75,33 @@ PLOTLY_CONFIG = {
 }
 
 
-def apply_publication_style(fig: go.Figure, height: int = 520, title_size: int = 18) -> go.Figure:
-    # Streamlit theme base is typically "light" or "dark"
-    base = st.get_option("theme.base") or "light"
-    is_dark = str(base).strip().lower() == "dark"
+def _get_streamlit_theme_tokens() -> tuple[str, str, str, str]:
+    """
+    Returns (template, font_colour, paper_bg, plot_bg) using Streamlit theme tokens when available.
+    """
+    base = (st.get_option("theme.base") or "light").strip().lower()
+    text = st.get_option("theme.textColor")
+    bg = st.get_option("theme.backgroundColor")
 
-    template = "plotly_dark" if is_dark else "plotly_white"
-    font_colour = "white" if is_dark else "black"
+    template = "plotly_dark" if base == "dark" else "plotly_white"
+    font_colour = str(text).strip() if text else ("white" if base == "dark" else "black")
+
+    # Let the chart blend with Streamlit by default
+    paper_bg = "rgba(0,0,0,0)" if bg is None else str(bg)
+    plot_bg = "rgba(0,0,0,0)" if bg is None else str(bg)
+
+    return template, font_colour, paper_bg, plot_bg
+
+
+
+def apply_publication_style(fig: go.Figure, height: int = 520, title_size: int = 18) -> go.Figure:
+    template, font_colour, paper_bg, plot_bg = _get_streamlit_theme_tokens()
 
     fig.update_layout(
         template=template,
         height=height,
+        paper_bgcolor=paper_bg,
+        plot_bgcolor=plot_bg,
         font=dict(size=14, color=font_colour),
         title=dict(font=dict(size=title_size, color=font_colour)),
         legend=dict(font=dict(size=13, color=font_colour)),
@@ -102,16 +118,15 @@ def apply_publication_style(fig: go.Figure, height: int = 520, title_size: int =
             title_font=dict(size=14, color=font_colour),
         )
     except Exception:
-        # Non-cartesian traces (eg Sankey)
         pass
 
-    # Bar labels, etc.
     try:
         fig.update_traces(textfont=dict(size=13, color=font_colour))
     except Exception:
         pass
 
     return fig
+
 
 
 
@@ -2341,6 +2356,7 @@ Scaled scenario:
 
 if __name__ == "__main__":
     main()
+
 
 
 
