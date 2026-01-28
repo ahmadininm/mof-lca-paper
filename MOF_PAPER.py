@@ -1249,26 +1249,35 @@ def plot_sankey_materials_processes(
     targets.append(idx["Total GWP"])
     values.append(to_total)
 
-    fig = go.Figure(
-        data=[
-            go.Sankey(
-                node=dict(
-                    pad=18,
-                    thickness=22,
-                    line=dict(color="black", width=0.8),
-                    label=node_labels,
-                    color=node_colors,
-                ),
-                link=dict(source=sources, target=targets, value=values),
-            )
-        ]
-    )
-    fig.update_layout(
-        title_text=f"Sankey (materials + processes): {bead_name}",
-        font=dict(size=14, color="black"),
-        height=520,
-        margin=dict(l=10, r=10, t=60, b=10),
-    )
+template, font_colour, paper_bg, plot_bg = _get_streamlit_theme_tokens()
+line_colour = "white" if font_colour.lower() == "white" else "black"
+
+fig = go.Figure(
+    data=[
+        go.Sankey(
+            arrangement="snap",
+            node=dict(
+                pad=28,
+                thickness=30,
+                line=dict(color=line_colour, width=0.8),
+                label=node_labels,
+                color=node_colors,
+            ),
+            link=dict(source=sources, target=targets, value=values),
+        )
+    ]
+)
+
+fig.update_layout(
+    template=template,
+    paper_bgcolor=paper_bg,
+    plot_bgcolor=plot_bg,
+    title_text=f"Sankey (materials + processes): {bead_name}",
+    font=dict(size=18, color=font_colour),
+    height=720,
+    margin=dict(l=10, r=10, t=70, b=10),
+)
+
     return fig
 
 
@@ -2356,6 +2365,7 @@ Scaled scenario:
 
 if __name__ == "__main__":
     main()
+
 
 
 
