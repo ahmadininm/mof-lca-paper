@@ -1810,18 +1810,19 @@ Scaled scenario:
 
         df_fig3 = scaling.scaled_step_df.copy()
 
+
+
+
         def _step_group(step: str) -> str:
-            s = str(step)
+            s = str(step).strip()
             if "Microfluidizer" in s:
                 return "Microfluidisation"
             if "Mixing" in s or "Crosslinking" in s:
                 return "Mixing and crosslinking"
-            if "Freeze" in s:
+            if "Freeze Drying" in s or "2nd FD" in s:
                 return "Freeze-drying"
             if "Zr" in s or "Linker" in s:
                 return "MOF-step stirring"
-            if "Support Electricity" in s:
-                return "Support electricity"
             if "Solvent recovery" in s:
                 return "Solvent recovery"
             return "Other unit ops"
