@@ -1830,15 +1830,50 @@ Scaled scenario:
         df_fig3["Unit operation"] = df_fig3["Step"].map(_step_group)
         df_fig3_grouped = df_fig3.groupby(["Bead", "Unit operation"], as_index=False)["kWh_per_kg"].sum()
 
+
+
+        unit_op_order = [
+            "Freeze-drying",
+            "Microfluidisation",
+            "Mixing and crosslinking",
+            "Other unit ops",
+            "MOF-step stirring",
+            "Solvent recovery",
+        ]
+
+        unit_op_colours = {
+            "Freeze-drying": "#1f77b4",
+            "Microfluidisation": "#9ecae1",
+            "Mixing and crosslinking": "#ef4444",
+            "Other unit ops": "#f3b0b0",
+            "MOF-step stirring": "#2a9d8f",
+            "Solvent recovery": "#f59e0b",
+        }
+
+        df_fig3_grouped["Unit operation"] = pd.Categorical(
+            df_fig3_grouped["Unit operation"],
+            categories=unit_op_order,
+            ordered=True,
+        )
+        df_fig3_grouped = df_fig3_grouped.sort_values(["Bead", "Unit operation"])
+
         fig3 = px.bar(
             df_fig3_grouped,
             x="Bead",
             y="kWh_per_kg",
             color="Unit operation",
             barmode="stack",
+            category_orders={
+                "Bead": ["Ref-Bead", "U@Bead"],
+                "Unit operation": unit_op_order,
+            },
+            color_discrete_map=unit_op_colours,
             title="Figure 3: Unit-operation electricity breakdown (scaled)",
             text_auto=".2f",
         )
+
+
+        
         fig3 = apply_publication_style(fig3, height=520)
         st.plotly_chart(fig3, use_container_width=True, key="fig3_unit_ops", config=PLOTLY_CONFIG)
         add_png_download_button(fig3, filename="Figure_3_unit_operation_electricity_scaled", key="fig3_unit_ops")
