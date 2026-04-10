@@ -960,9 +960,13 @@ def compute_scaling_from_input_tables(
         ("Elec: 2nd FD", kwh_per_kg(P_FD, t_FD_mof, SF_FD_mof, m_mof_g)),
     ]
 
-    # Support electricity (Excel: Total Ref Elec * polymer support fraction)
-    support_elec_base = polymer_fraction_support * ref_total_base
-    support_elec_scaled = polymer_fraction_support * ref_total_scaled
+
+    # Redistribute support electricity across the original Ref-Bead support steps
+    mof_support_steps_base = [(s, polymer_fraction_support * v) for s, v in ref_steps_base]
+    mof_support_steps_scaled = [(s, polymer_fraction_support * v) for s, v in ref_steps_scaled]
+
+    support_elec_base = float(sum(v for _, v in mof_support_steps_base))
+    support_elec_scaled = float(sum(v for _, v in mof_support_steps_scaled))
 
     # Solvent recovery electricity (Excel equivalent)
     R = max(0.0, min(float(solvent_recovery_frac), 0.999999))
@@ -974,17 +978,21 @@ def compute_scaling_from_input_tables(
     else:
         solv_rec_kwh_per_kg = 0.0
 
+
     # Build step dataframes
     baseline_step_rows = [{"route_id": ID_REF, "Bead": "Ref-Bead", "Step": s, "kWh_per_kg": float(v)} for s, v in ref_steps_base]
     scaled_step_rows = [{"route_id": ID_REF, "Bead": "Ref-Bead", "Step": s, "kWh_per_kg": float(v)} for s, v in ref_steps_scaled]
 
-    baseline_step_rows.append({"route_id": ID_MOF, "Bead": "U@Bead", "Step": "Support Electricity", "kWh_per_kg": float(support_elec_base)})
-    scaled_step_rows.append({"route_id": ID_MOF, "Bead": "U@Bead", "Step": "Support Electricity", "kWh_per_kg": float(support_elec_scaled)})
+    for s, v in mof_support_steps_base:
+        baseline_step_rows.append({"route_id": ID_MOF, "Bead": "U@Bead", "Step": s, "kWh_per_kg": float(v)})
+    for s, v in mof_support_steps_scaled:
+        scaled_step_rows.append({"route_id": ID_MOF, "Bead": "U@Bead", "Step": s, "kWh_per_kg": float(v)})
 
     for s, v in mof_specific_base:
         baseline_step_rows.append({"route_id": ID_MOF, "Bead": "U@Bead", "Step": s, "kWh_per_kg": float(v)})
     for s, v in mof_specific_scaled:
         scaled_step_rows.append({"route_id": ID_MOF, "Bead": "U@Bead", "Step": s, "kWh_per_kg": float(v)})
+        
 
     if solv_rec_kwh_per_kg > 0:
         baseline_step_rows.append({"route_id": ID_MOF, "Bead": "U@Bead", "Step": "Solvent recovery (ethanol + formic)", "kWh_per_kg": float(solv_rec_kwh_per_kg)})
